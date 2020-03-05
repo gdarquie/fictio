@@ -9,8 +9,6 @@ import fetch from 'isomorphic-unfetch';
 
 const Fiction = (props) => {
     const fictionUuid = props.payload.uuid;
-
-    console.log(props.payload.origins);
     return (
         <div>
             <Head>
@@ -53,7 +51,7 @@ const Fiction = (props) => {
 
 Fiction.getInitialProps = async function(context) {
     const {id} = context.query;
-    const res = await fetch('http://127.0.0.1:8000/api/fictions/'+id+'.json');
+    const res = await fetch(process.env.edoAPIUrl+'fictions/'+id+'.json');
     const payload = await res.json();
     return { payload };
 };

@@ -20,7 +20,7 @@ const Index = (props) => {
                 <Link href="/fictions/1b7df281-ae2a-40bf-ad6a-ac60409a9ce6">
                     <a>My Fiction</a>
                 </Link>
-                <Button variant="contained" color="primary">
+                <Button variant="contained" color="primary.main">
                     Hello World
                 </Button>
                 <Card>
