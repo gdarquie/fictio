@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import AppBar from '@material-ui/core/AppBar';
+import { red } from '@material-ui/core/colors';
 
 const linkStyle = {
     marginRight: 15
@@ -7,12 +9,13 @@ const linkStyle = {
 const containerStyle = {
     display: "flex",
     border: "1px solid grey",
-    padding: "3px 6px"
+    padding: "3px 6px",
+    height: "50px",
+    background: "black",
 };
 
 const Header = () => (
-    <div className='container' style={containerStyle}>
-
+    <AppBar className='container' style={containerStyle}>
         <div className='sitename'>Ficti</div>
 
         <Link href="/">
@@ -28,8 +31,9 @@ const Header = () => (
         <Link href="/">
             <a style={linkStyle}>Logout</a>
         </Link>
+        
 
-        <style jsx>{`
+        <style jsx global>{`
             .container {
                 flex-flow: row wrap;
                 justify-content: space-around;
@@ -40,7 +44,7 @@ const Header = () => (
                 font-weight: bold;
             }
         `}</style>
-    </div>
+    </AppBar>
 );
 
 export default Header;
