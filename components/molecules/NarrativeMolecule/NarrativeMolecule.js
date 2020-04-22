@@ -47,6 +47,12 @@ const Narrative = props => {
             return "hidden";
         }
     }
+
+    function displayIconDisplay() {
+        if(props.narrative.children.length > 0) {
+            return  <IconDisplay />
+        }
+    }
     
     return (
         <div>  
@@ -72,16 +78,17 @@ const Narrative = props => {
                             <div className = 'content'>
                                 
                                 <div className="textBox">
-                                    <TextBox content = {narrativeState.content} setContent={setContent} />
+                                    <TextBox content={narrativeState.content} setContent={setContent} />
                                 </div>
                                 
                                 <div className = 'delete'>
                                     <CrossDelete />
                                 </div>
-                                
+
                                 <div className = 'display'>
-                                    <IconDisplay />
+                                    {displayIconDisplay()}
                                 </div>
+
                             </div>
                     </article>
                 )}
