@@ -38,6 +38,14 @@ const Narrative = props => {
 
     function handleClick() {
         props.onClick(props.narrative.uuid);
+
+        if (openState === 'true') {
+            setOpenState('false');
+        }
+
+        else {
+            setOpenState('true');
+        }
     }
 
     function getClassNames() {
@@ -51,16 +59,7 @@ const Narrative = props => {
 
     function displayIconDisplay() {
         if(props.narrative.children.length > 0) {
-            let result = null;
-
-            if (openState == 'true') {
-                result =  (<IconDisplay />);
-            }
-            else {
-                result = (<p>Hello</p>);
-            }
-
-            return result;
+            return (<IconDisplay isOpen={openState}/>);
         }
     }
 
@@ -101,7 +100,7 @@ const Narrative = props => {
                         </aside>
 
                         <div className = 'content'>
-                            <div className="textBox">
+                            <div className="textBox"> 
                                 <TextBox content={narrativeState.content} setContent={setContent} />
                             </div>
                             
@@ -109,7 +108,8 @@ const Narrative = props => {
                                 <CrossDelete />
                             </div>
 
-                            <div className = 'display' onClick={handleDisplayIconClick} isOpen={openState}>
+                            <div className = 'display' onClick={handleDisplayIconClick}>
+                            {/* todo: to check if ok */}
                                 {displayIconDisplay()}
                             </div>
 
