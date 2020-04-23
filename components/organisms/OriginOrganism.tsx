@@ -13,6 +13,7 @@ const Origin = props => {
     // set State for column
     const [columnState, setColumnState] = useState('');
     const [activeUuid, setActiveUuid] = useState('');
+    const [hiddenNarrativesList, setHiddenNarrativesList] = useState([]);
     const narrativeList = new NarrativeList(props.narratives);
 
     /**
@@ -104,27 +105,49 @@ const Origin = props => {
 
         var response = [];
 
-        response.push(
-            <article className={styles.lvl} key={narrative.uuid}>
-                <NarrativeMolecule 
-                    isActive={`${(narrative.uuid === activeUuid) ? true : false}`}
-                    // isActive={isActive}
-                    key = {narrative.uuid} 
-                    narrative={narrative} 
-                    onClick={() => handleClick(narrative.uuid)}
-                    openModal={openModalOrigin} 
-                    index = {index} //todo : to check
-                    draggableId = {narrative.uuid}
-                />
-                {displayChildren(narrative.children)}
-            </article>
-        );
-        
+        if (!hiddenNarrativesList.includes(narrative.uuid)) {
+            response.push(
+                <article className={styles.lvl} key={narrative.uuid}>
+                    <div className="parent">
+                        <NarrativeMolecule 
+                            isActive={`${(narrative.uuid === activeUuid) ? true : false}`}
+                            // isActive={isActive}
+                            key = {narrative.uuid} 
+                            narrative={narrative} 
+                            onClick={() => handleClick(narrative.uuid)}
+                            openModal={openModalOrigin} 
+                            index = {index} //todo : to check
+                            draggableId = {narrative.uuid}
+                            originHandlesDisplayIconClick = {handleNarrativeDisplay}
+                        />
+                    </div>
+                    <div className={styles.children}>
+                        {displayChildren(narrative.children)}
+                    </div>
+                </article>
+            );
+        }
+
         return response;
     }
 
+    function handleNarrativeDisplay(list) {
+        let newList = hiddenNarrativesList;
+        list.map(narrativeUuid => {(
+            newList.push(narrativeUuid)
+        )})
+
+        setHiddenNarrativesList(newList);
+        console.log(hiddenNarrativesList);
+
+        // setHiddenNarrativesList((prevState) => ({
+        //     hiddenNarrativesList: [...prevState.hiddenNarrativesList, list[0]]
+        // }))
+    
+    }
+
     return (
-        <div className="element">
+        <div className={styles.element}>
             <DragDropContext onDragEnd={handleOnDragEnd} className='dropContext element' >
                 <Droppable droppableId='droppable-1' >
                     { provided => (
@@ -141,11 +164,6 @@ const Origin = props => {
                 </Droppable>
             </DragDropContext>
             <style jsx>{`
-                .element {
-                    max-width: 800px;
-                    margin: auto;
-                }
-
                 p {
                     color:white;
                 }

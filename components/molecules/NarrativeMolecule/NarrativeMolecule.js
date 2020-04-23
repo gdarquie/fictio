@@ -7,6 +7,7 @@ import { Draggable } from 'react-beautiful-dnd';
 
 const Narrative = props => {
     const [narrativeState, setNarrativeState] = useState(props.narrative);
+    const [openState, setOpenState] = useState('true');
 
     function openModalNarrative() {
         props.openModal(narrativeState.uuid);
@@ -50,7 +51,31 @@ const Narrative = props => {
 
     function displayIconDisplay() {
         if(props.narrative.children.length > 0) {
-            return  <IconDisplay />
+            let result = null;
+
+            if (openState == 'true') {
+                result =  (<IconDisplay />);
+            }
+            else {
+                result = (<p>Hello</p>);
+            }
+
+            return result;
+        }
+    }
+
+    function handleDisplayIconClick() {
+        //todo : distinct between adding and removing
+        var hiddenNarrativesList = [];
+        props.narrative.children.map((narrative) => {
+            hiddenNarrativesList.push(narrative.uuid);
+        });
+        props.originHandlesDisplayIconClick(hiddenNarrativesList);
+        if (openState == 'true') {
+            setOpenState('false');
+        }
+        else {
+            setOpenState('true');
         }
     }
     
@@ -75,21 +100,20 @@ const Narrative = props => {
                             />
                         </aside>
 
-                            <div className = 'content'>
-                                
-                                <div className="textBox">
-                                    <TextBox content={narrativeState.content} setContent={setContent} />
-                                </div>
-                                
-                                <div className = 'delete'>
-                                    <CrossDelete />
-                                </div>
-
-                                <div className = 'display'>
-                                    {displayIconDisplay()}
-                                </div>
-
+                        <div className = 'content'>
+                            <div className="textBox">
+                                <TextBox content={narrativeState.content} setContent={setContent} />
                             </div>
+                            
+                            <div className = 'delete'>
+                                <CrossDelete />
+                            </div>
+
+                            <div className = 'display' onClick={handleDisplayIconClick} isOpen={openState}>
+                                {displayIconDisplay()}
+                            </div>
+
+                        </div>
                     </article>
                 )}
             </Draggable>
@@ -109,6 +133,7 @@ const Narrative = props => {
                     width: 4%;
                     left: 46%;
                     color: white;
+                    cursor: pointer;
                 }
 
                 .delete {

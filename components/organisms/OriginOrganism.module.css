@@ -1,3 +1,8 @@
+.element {
+    max-width: 800px;
+    margin: auto;
+}
+
 .lvl {
     margin-left: 1%;
     width: 99%;
