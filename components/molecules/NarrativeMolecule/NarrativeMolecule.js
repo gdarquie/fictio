@@ -64,18 +64,29 @@ const Narrative = props => {
     }
 
     function handleDisplayIconClick() {
-        //todo : distinct between adding and removing
         var hiddenNarrativesList = [];
-        props.narrative.children.map((narrative) => {
-            hiddenNarrativesList.push(narrative.uuid);
-        });
-        props.originHandlesDisplayIconClick(hiddenNarrativesList);
+
+        // if open is true, we hide the children and add them to the hidden narrative list
         if (openState == 'true') {
+            props.narrative.children.map((narrative) => {
+                if (!hiddenNarrativesList.includes(narrative.uuid)) {
+                    hiddenNarrativesList.push(narrative.uuid);
+                }
+            });
             setOpenState('false');
         }
+        // else we remove the childre from the list
         else {
+            hiddenNarrativesList.map((index, uuid) =>{
+                if (props.narrative.children.includes(uuid) ) {
+                    hiddenNarrativesList.splice(index, 1);
+                }
+            });
+
             setOpenState('true');
         }
+
+        props.originHandlesDisplayIconClick(hiddenNarrativesList);
     }
     
     return (

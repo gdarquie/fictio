@@ -132,18 +132,8 @@ const Origin = props => {
     }
 
     function handleNarrativeDisplay(list) {
-        let newList = hiddenNarrativesList;
-        list.map(narrativeUuid => {(
-            newList.push(narrativeUuid)
-        )})
-
-        setHiddenNarrativesList(newList);
-        console.log(hiddenNarrativesList);
-
-        // setHiddenNarrativesList((prevState) => ({
-        //     hiddenNarrativesList: [...prevState.hiddenNarrativesList, list[0]]
-        // }))
-    
+        // todo : upgrade by keeping all the uuid
+        setHiddenNarrativesList(list);    
     }
 
     return (
