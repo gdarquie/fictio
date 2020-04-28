@@ -101,15 +101,61 @@ const Narrative = props => {
 
         if (narrative.children.length === 0) {
             response.push(
-                <NarrativeMolecule 
-                    isActive={`${(narrative.uuid === activeUuid) ? true : false}`}
-                    key = {narrative.uuid} 
-                    narrative={narrative} 
-                    onClick={() => handleClick(narrative.uuid)}
-                    openModal={openModalOrigin} 
-                    index = {index} //todo : to check
-                    draggableId = {narrative.uuid}
-                />
+                <article key={narrative.uuid}>
+                    <ExpansionPanel 
+                    >
+                            <ExpansionPanelSummary
+                                expandIcon={narrative.children.length > 0 ? <ExpandMoreIcon /> :null}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                {/* <Typography className={classes.heading}>Expansion Panel 1</Typography> */}
+
+                                <Typography className={classes.heading}>
+                                    <Draggable key={props.narrative.uuid} draggableId={props.draggableId} index={props.index}>
+                                        { provided => (
+                                            <article  
+                                                className='element'
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                                onClick={handleClick}
+                                            >
+
+                                                <aside className={getClassNames()}>
+                                                    <NarrativeMenu
+                                                        openModal={openModalNarrative} 
+                                                        narrative={narrative} 
+                                                        saveNarrative={saveNarrative} 
+                                                        setContent={setContent}
+                                                    />
+                                                </aside>
+
+                                                <div className = 'content'>
+                                                    
+                                                    <div className="textBox">
+                                                        <TextBox content = {narrative.content} setContent={setContent} />
+                                                    </div>
+                                                    
+                                                    <div className = 'delete'>
+                                                        <CrossDelete />
+                                                    </div>
+                                                    
+                                                    <div className = 'display'>
+                                                        <IconDisplay />
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        )}
+                                    </Draggable>
+                                </Typography>
+                            </ExpansionPanelSummary>
+
+                            {displayChildren(narrative)}
+        
+                    </ExpansionPanel>
+                
+                </article>
             )
         }
         else {
