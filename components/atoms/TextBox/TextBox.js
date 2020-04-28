@@ -27,7 +27,8 @@ const TextBox = props => {
             <article className='textBox'>
                 <TextareaAutosize
                     onChange={handleChange}
-                    value = {props.content}
+                    // defaultValue={props.content}
+                    value={props.content}
                     aria-label="empty textarea"
                     placeholder="You can write here"
                     className={clsx(className)}

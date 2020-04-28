@@ -4,10 +4,31 @@ import CrossDelete from '../../atoms/CrossDelete/CrossDelete';
 import IconDisplay from '../../atoms/IconDisplay/IconDisplay';
 import React, { useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
 
 const Narrative = props => {
+    const useStyles = makeStyles((theme) => ({
+        root: {
+          width: '100%',
+          background: "black",
+        },
+        heading: {
+          fontSize: theme.typography.pxToRem(15),
+          fontWeight: theme.typography.fontWeightRegular,
+          background: "black",
+        },
+      }));
+
+    const classes = useStyles();
+
+    // set hooks state
     const [narrativeState, setNarrativeState] = useState(props.narrative);
-    const [openState, setOpenState] = useState('true');
+    // const [openState, setOpenState] = useState('true');
 
     function openModalNarrative() {
         props.openModal(narrativeState.uuid);
@@ -38,14 +59,6 @@ const Narrative = props => {
 
     function handleClick() {
         props.onClick(props.narrative.uuid);
-
-        if (openState === 'true') {
-            setOpenState('false');
-        }
-
-        else {
-            setOpenState('true');
-        }
     }
 
     function getClassNames() {
@@ -57,77 +70,118 @@ const Narrative = props => {
         }
     }
 
-    function displayIconDisplay() {
-        if(props.narrative.children.length > 0) {
-            return (<IconDisplay isOpen={openState}/>);
-        }
-    }
+    /**
+     * 
+     * @param children 
+     */
+    function displayChildren(narrative) {
+        var response = [];
 
-    function handleDisplayIconClick() {
-        var hiddenNarrativesList = [];
-
-        // if open is true, we hide the children and add them to the hidden narrative list
-        if (openState == 'true') {
-            props.narrative.children.map((narrative) => {
-                if (!hiddenNarrativesList.includes(narrative.uuid)) {
-                    hiddenNarrativesList.push(narrative.uuid);
-                }
-            });
-            setOpenState('false');
-        }
-        // else we remove the childre from the list
-        else {
-            hiddenNarrativesList.map((index, uuid) =>{
-                if (props.narrative.children.includes(uuid) ) {
-                    hiddenNarrativesList.splice(index, 1);
-                }
-            });
-
-            setOpenState('true');
+        if(narrative.children.length > 0) {
+            narrative.children.map( (child, index) => {
+                response.push(
+                    <ExpansionPanelDetails>
+                        {displayNarrative(child, index)}
+                    </ExpansionPanelDetails>
+                    )
+            })
         }
 
-        props.originHandlesDisplayIconClick(hiddenNarrativesList);
+        return response;
     }
     
-    return (
-        <div>  
-            <Draggable key={props.narrative.uuid} draggableId={props.draggableId} index={props.index}>
-                { provided => (
-                    <article  
-                        className='element'
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        onClick={handleClick}
+    /**
+     * 
+     * @param narrative 
+     * @param index 
+     */
+    function displayNarrative(narrative, index = 0) {
+
+        var response = [];
+
+        if (narrative.children.length === 0) {
+            response.push(
+                <NarrativeMolecule 
+                    isActive={`${(narrative.uuid === activeUuid) ? true : false}`}
+                    key = {narrative.uuid} 
+                    narrative={narrative} 
+                    onClick={() => handleClick(narrative.uuid)}
+                    openModal={openModalOrigin} 
+                    index = {index} //todo : to check
+                    draggableId = {narrative.uuid}
+                />
+            )
+        }
+        else {
+            response.push(
+                <article key={narrative.uuid}>
+                    <ExpansionPanel 
                     >
+                            <ExpansionPanelSummary
+                                expandIcon={narrative.children.length > 0 ? <ExpandMoreIcon /> :null}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                {/* <Typography className={classes.heading}>Expansion Panel 1</Typography> */}
 
-                        <aside className={getClassNames()}>
-                            <NarrativeMenu
-                                openModal={openModalNarrative} 
-                                narrative={narrativeState} 
-                                saveNarrative={saveNarrative} 
-                                setContent={setContent}
-                            />
-                        </aside>
+                                <Typography className={classes.heading}>
+                                    <Draggable key={props.narrative.uuid} draggableId={props.draggableId} index={props.index}>
+                                        { provided => (
+                                            <article  
+                                                className='element'
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                                onClick={handleClick}
+                                            >
 
-                        <div className = 'content'>
-                            <div className="textBox"> 
-                                <TextBox content={narrativeState.content} setContent={setContent} />
-                            </div>
-                            
-                            <div className = 'delete'>
-                                <CrossDelete />
-                            </div>
+                                                <aside className={getClassNames()}>
+                                                    <NarrativeMenu
+                                                        openModal={openModalNarrative} 
+                                                        narrative={narrative} 
+                                                        saveNarrative={saveNarrative} 
+                                                        setContent={setContent}
+                                                    />
+                                                </aside>
 
-                            <div className = 'display' onClick={handleDisplayIconClick}>
-                            {/* todo: to check if ok */}
-                                {displayIconDisplay()}
-                            </div>
+                                                <div className = 'content'>
+                                                    
+                                                    <div className="textBox">
+                                                        <TextBox content = {narrative.content} setContent={setContent} />
+                                                    </div>
+                                                    
+                                                    <div className = 'delete'>
+                                                        <CrossDelete />
+                                                    </div>
+                                                    
+                                                    <div className = 'display'>
+                                                        <IconDisplay />
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        )}
+                                    </Draggable>
+                                </Typography>
+                            </ExpansionPanelSummary>
 
-                        </div>
-                    </article>
-                )}
-            </Draggable>
+                            {displayChildren(narrative)}
+        
+                    </ExpansionPanel>
+                
+                </article>
+            );
+        }
+
+        return response;
+    }
+    
+
+
+    return (
+        <div>
+            {displayNarrative(narrativeState)}
+
+            
             <style jsx>{`
                 .element {
                     display: flex;
@@ -155,7 +209,8 @@ const Narrative = props => {
                 }
 
                 .content {
-                    width: 650px;
+                    // width: 650px;
+                    width: 100%;
                     margin-top: 5px;
                     position: relative;
                 }
@@ -166,7 +221,6 @@ const Narrative = props => {
 
             `}</style>
         </div>
-
     );
 }
 

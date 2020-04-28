@@ -7,3 +7,12 @@
     margin-left: 1%;
     width: 99%;
 }
+
+.root {
+    width: '100%';
+    background: "black";
+  }
+
+.heading {
+    background: "black";
+  }
