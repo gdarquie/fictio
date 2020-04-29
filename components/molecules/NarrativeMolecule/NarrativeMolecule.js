@@ -22,6 +22,9 @@ const Narrative = props => {
           fontWeight: theme.typography.fontWeightRegular,
           background: "black",
         },
+        narrative: {
+            maxWidth: '650px',
+        }
       }));
 
     const classes = useStyles();
@@ -61,7 +64,7 @@ const Narrative = props => {
         props.onClick(props.narrative.uuid);
     }
 
-    function getClassNames() {
+    function getClassNames() {        
         if (props.isActive == 'true') {
             return "";
         }
@@ -80,7 +83,7 @@ const Narrative = props => {
         if(narrative.children.length > 0) {
             narrative.children.map( (child, index) => {
                 response.push(
-                    <ExpansionPanelDetails>
+                    <ExpansionPanelDetails key={child.uuid}>
                         {displayNarrative(child, index)}
                     </ExpansionPanelDetails>
                     )
@@ -107,48 +110,43 @@ const Narrative = props => {
                             <ExpansionPanelSummary
                                 expandIcon={narrative.children.length > 0 ? <ExpandMoreIcon /> :null}
                                 aria-controls="panel1a-content"
-                                id="panel1a-header"
+                                id={"panel1a-header-"+narrative.uuid}
                             >
-                                {/* <Typography className={classes.heading}>Expansion Panel 1</Typography> */}
+                                <Draggable key={props.narrative.uuid} draggableId={props.draggableId} index={props.index}>
+                                    { provided => (
+                                        <article  
+                                            className='element'
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+                                            {...provided.dragHandleProps}
+                                            onClick={handleClick}
+                                        >
 
-                                <Typography className={classes.heading}>
-                                    <Draggable key={props.narrative.uuid} draggableId={props.draggableId} index={props.index}>
-                                        { provided => (
-                                            <article  
-                                                className='element'
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                onClick={handleClick}
-                                            >
+                                            <aside className={getClassNames()}>
+                                                <NarrativeMenu
+                                                    openModal={openModalNarrative} 
+                                                    narrative={narrative} 
+                                                    saveNarrative={saveNarrative} 
+                                                    setContent={setContent}
+                                                />
+                                            </aside>
 
-                                                <aside className={getClassNames()}>
-                                                    <NarrativeMenu
-                                                        openModal={openModalNarrative} 
-                                                        narrative={narrative} 
-                                                        saveNarrative={saveNarrative} 
-                                                        setContent={setContent}
-                                                    />
-                                                </aside>
-
-                                                <div className = 'content'>
-                                                    
-                                                    <div className="textBox">
-                                                        <TextBox content = {narrative.content} setContent={setContent} />
-                                                    </div>
-                                                    
-                                                    <div className = 'delete'>
-                                                        <CrossDelete />
-                                                    </div>
-                                                    
-                                                    <div className = 'display'>
-                                                        <IconDisplay />
-                                                    </div>
+                                            <div className = 'content'>
+                                                <div className="textBox">
+                                                    <TextBox content = {narrative.content} setContent={setContent} />
                                                 </div>
-                                            </article>
-                                        )}
-                                    </Draggable>
-                                </Typography>
+                                                
+                                                <div className = 'delete'>
+                                                    <CrossDelete />
+                                                </div>
+                                                
+                                                <div className = 'display'>
+                                                    <IconDisplay />
+                                                </div>
+                                            </div>
+                                        </article>
+                                    )}
+                                </Draggable>
                             </ExpansionPanelSummary>
 
                             {displayChildren(narrative)}
@@ -161,16 +159,12 @@ const Narrative = props => {
         else {
             response.push(
                 <article key={narrative.uuid}>
-                    <ExpansionPanel 
-                    >
+                    <ExpansionPanel>
                             <ExpansionPanelSummary
                                 expandIcon={narrative.children.length > 0 ? <ExpandMoreIcon /> :null}
                                 aria-controls="panel1a-content"
                                 id="panel1a-header"
                             >
-                                {/* <Typography className={classes.heading}>Expansion Panel 1</Typography> */}
-
-                                <Typography className={classes.heading}>
                                     <Draggable key={props.narrative.uuid} draggableId={props.draggableId} index={props.index}>
                                         { provided => (
                                             <article  
@@ -207,7 +201,6 @@ const Narrative = props => {
                                             </article>
                                         )}
                                     </Draggable>
-                                </Typography>
                             </ExpansionPanelSummary>
 
                             {displayChildren(narrative)}
@@ -224,14 +217,14 @@ const Narrative = props => {
 
 
     return (
-        <div>
+        <div className='element' >
             {displayNarrative(narrativeState)}
 
-            
             <style jsx>{`
                 .element {
                     display: flex;
                     align-items: center;
+                    width:650px;
                 }
 
                 .textBox {
@@ -255,8 +248,7 @@ const Narrative = props => {
                 }
 
                 .content {
-                    // width: 650px;
-                    width: 100%;
+                    width: 650px;
                     margin-top: 5px;
                     position: relative;
                 }
